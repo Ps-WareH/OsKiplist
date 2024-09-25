@@ -1,0 +1,3 @@
+/Users/zhangbokun/Documents/k/OsKiplist/cmake-build-debug/CMakeFiles/OsKiplist.dir
+/Users/zhangbokun/Documents/k/OsKiplist/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/zhangbokun/Documents/k/OsKiplist/cmake-build-debug/CMakeFiles/rebuild_cache.dir
