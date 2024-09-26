@@ -5,28 +5,14 @@
 #include "OsKiplist.h"
 template<typename T>
 
-bool OsKiplist<T>::insert(double score, T val) {
+void OsKiplist<T>::insert(double score, T val) {
     assert(val!= NULL);
-    // find position of this score first
-    //if this elem alr exits,
-    //score from low->high in list
+    //score & value from low->high in list
+    Node<T>* newNode = nullptr;
+    if(this->record.find(val)==this->record.end())newNode = new Node (score, val,getRandomLevel());//it's insert not update
+
+    this->record[val]=score;
     Node<T>* ptr = header;
-    for(int i = this->maxLevel;i>=0;i--){
-        while(ptr->forwards!= nullptr){//not the tail of the list
-            if(ptr->forwards[i]->score<score){
-                ptr=ptr->forwards[i];
-            }else if (ptr->forwards[i]->score==score){
-                if(ptr->forwards[i]->value<val){
-                    ptr=ptr->forwards[i];
-                }else if(ptr->forwards->value==val){
-                    return false;
-                }else{//go next level,i--
-                    break;
-                }
-            }else break;//go next level, i--
-        }
-    }
-    Node<T>* newNode = new Node (score, val,getRandomLevel());
     ptr = header;
     for(int i = this->maxLevel;i>=0;i--){
         while(ptr->forwards[i]!= nullptr){
@@ -35,31 +21,70 @@ bool OsKiplist<T>::insert(double score, T val) {
             }else if (ptr->forwards[i]->score==score){
                 if(ptr->forwards[i]->value<val) {
                     ptr = ptr->forwards[i];
-                }else{//ptr->forwards[i]->value>val
-                    newNode->backward=ptr;
-                    newNode->forwards[i]=ptr->forwards[i];
-                    ptr->forwards[i]=newNode;
-                    newNode->forwards[i]->backward=newNode;
+                }else if(ptr->forwards[i]->value==val){
+                    ptr->forwards[i]->score = score;//update
+                    break;//to next level
+                }
+                else{//ptr->forwards[i]->value>val,consider insert
+                    if(i<=newNode->level) {
+                        newNode->backward = ptr;
+                        newNode->forwards[i] = ptr->forwards[i];
+                        ptr->forwards[i] = newNode;
+                        newNode->forwards[i]->backward = newNode;
+                    }
                     break;
                     //go next level,i--
                 }
             }else {//ptr->forwards[i]->score>score
-                newNode->backward=ptr;
-                newNode->forwards[i]=ptr->forwards[i];
-                ptr->forwards[i]=newNode;
-                newNode->forwards[i]->backward=newNode;
+                if(i<=newNode->level){
+                    newNode->backward=ptr;
+                    newNode->forwards[i]=ptr->forwards[i];
+                    ptr->forwards[i]=newNode;
+                    newNode->forwards[i]->backward=newNode;
+                }
                 break;
                 //go next level,i--
             }
         }
         if(ptr->forwards[i]== nullptr){
-            ptr->forwards[i]=newNode;
-            newNode->backward=ptr;
-            if(i==0)this->tail = newNode;
+            if(i<=newNode->level){
+                ptr->forwards[i]=newNode;
+                newNode->backward=ptr;
+                if(i==0)this->tail = newNode;
+            }
+        }
+    }
+    return;
+}
+template <typename T>
+bool OsKiplist<T>::deleteMember(T member){
+    if(this->record.find(member)==record.end())return false;
+    double score = this->record[member];
+    remove(this->record.begin(), this->record.end(),member);
+    Node<T> * ptr = header;
+    for(int i = this->maxLevel;i>=0;i--){
+        while(ptr->forwards[i]!= nullptr){
+            if(ptr->forwards[i]->score<score){
+                ptr= ptr->forwards[i];
+            }else if (ptr->forwards[i]->score > score){
+                break;//go to next level
+            }else if(ptr->forwards[i]->score==score){
+                if(ptr->forwards[i]->value<member){
+                    ptr=ptr->forwards[i];
+                }else if(ptr->forwards[i]->value>member){
+                    break;//go to next level
+                }else{//ptr->forwards[i]->value==member
+                    ptr->forwards[i]=ptr->forwards[i]->forwards[i];
+                    if(i==0)delete ptr->forwards[i]->backward;
+                    if(ptr->forwards[i]!= nullptr)ptr->forwards[i]->backward=ptr;
+                    break;//go to next level to delete more
+                }
+            }
         }
     }
     return true;
 }
+
 template <typename T>
 int OsKiplist<T>::getRandomLevel() {
     int level = 0;

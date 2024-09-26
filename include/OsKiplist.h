@@ -7,6 +7,7 @@
 #include <cassert>
 #include <cstdlib>
 #include <ctime>
+#include <unordered_map>
 #define SKIPLIST_P 0.5
 #define OSKIPLIST_OSKIPLIST_H
 
@@ -17,18 +18,19 @@ class OsKiplist {
     Node<T>* header;
     Node<T>* tail;
     int maxLevel=3;
+    unordered_map<T,double> record;
 public:
     OsKiplist(int maxLevel){
         assert(maxLevel>0);
         this->maxLevel=maxLevel;
-        header= new Node("dummyhead",maxLevel,0);
+        header= new Node(maxLevel,static_cast<T>("dummy"),0);
         tail = nullptr;
     }
     //score from low->high
     //value from low->high
-    //if elem alr exists in list(same score & value), return false
-    bool insert(double score, T val);
-
+    //如果一个元素已经存在，score会覆盖
+    void insert(double score, T val);
+    bool deleteMember(T memeber);
 
 //    randomLevel() 方法返回 0 表示当前插入的该元素不需要建索引，只需要存储数据到原始链表即可（概率 1/2）
 //    randomLevel() 方法返回 1 表示当前插入的该元素需要建一级索引（概率 1/4）

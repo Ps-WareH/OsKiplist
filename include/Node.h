@@ -42,5 +42,12 @@ public:
         strcpy((char*)value, strVal);
         this->forwards = malloc((this->level + 1) * sizeof(Node<T>*));//a vec of nullptr
     };
+    ~Node(){
+        free(this->value);
+        for(auto& p : this->forwards){
+            if(p!= nullptr)free(p);
+            free(backward);
+        }
+    }
 };
 #endif //OSKIPLIST_NODE_H
