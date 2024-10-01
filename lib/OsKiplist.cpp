@@ -6,6 +6,7 @@
 template<typename T>
 
 void OsKiplist<T>::insert(double score, T val) {
+    mtx.lock();
     assert(val!= NULL);
     //score & value from low->high in list
     Node<T>* newNode = nullptr;
@@ -54,10 +55,12 @@ void OsKiplist<T>::insert(double score, T val) {
             }
         }
     }
+    mtx.unlock();
     return;
 }
 template <typename T>
 bool OsKiplist<T>::deleteMember(T member){
+    mtx.lock();
     if(this->record.find(member)==record.end())return false;
     double score = this->record[member];
     remove(this->record.begin(), this->record.end(),member);
@@ -82,6 +85,7 @@ bool OsKiplist<T>::deleteMember(T member){
             }
         }
     }
+    mtx.unlock();
     return true;
 }
 

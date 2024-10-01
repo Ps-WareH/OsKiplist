@@ -19,6 +19,8 @@ class OsKiplist {
     Node<T>* tail;
     int maxLevel=3;
     unordered_map<T,double> record;
+    //？？？
+    std::mutex mtx;//全局变量还是类的成员变量？？
 public:
     OsKiplist(int maxLevel){
         assert(maxLevel>0);
