@@ -10,11 +10,13 @@
 
 template<typename T>
 class Node {
+public:
     double score;
-    const char* value;
+    T value;
     int level;//如果在level 1， 那么有2个forward指针
+
     Node* backward;// node before
-    Node* forwards[];// forwards[0]: node after this in level 0
+    Node** forwards;// forwards[0]: node after this in level 0
     const char* valueToString(T val) {
         if constexpr (std::is_arithmetic<T>::value) {
             // 如果是数值类型，使用 std::to_string 转换
@@ -29,18 +31,19 @@ class Node {
             throw std::invalid_argument("Unsupported type");
         }
     }
-public:
+
     Node(double score, T value, int level){
         this->level=level;
         // 把value从栈存到堆
         this->score = score;
-        const char* strVal = valueToString(value);
-        //(strlen(strVal)+1)/4???? for one byte
-        value = (char*)malloc(strlen(strVal) + 1);
-        // 分配内存 +1 是为了包含 '\0'
-        //模仿raw编码
-        strcpy((char*)value, strVal);
-        this->forwards = malloc((this->level + 1) * sizeof(Node<T>*));//a vec of nullptr
+        this->value = value;
+//        const char* strVal = valueToString(value);
+//        //(strlen(strVal)+1)/4???? for one byte
+//        value = (char*)malloc(strlen(strVal) + 1);
+//        // 分配内存 +1 是为了包含 '\0'
+//        //模仿raw编码
+//        strcpy((char*)value, strVal);
+        this->forwards = new Node<T>*[level + 1];//a vec of nullptr
     };
     ~Node(){
         free(this->value);

@@ -25,7 +25,7 @@ public:
     OsKiplist(int maxLevel){
         assert(maxLevel>0);
         this->maxLevel=maxLevel;
-        header= new Node(maxLevel,static_cast<T>("dummy"),0);
+        header= new Node(maxLevel,static_cast<T>("dummy"),maxLevel);
         tail = nullptr;
     }
     //score from low->high
@@ -40,8 +40,106 @@ public:
 //    randomLevel() 方法返回 3 表示当前插入的该元素需要建三级索引（概率 1/16）
 //    。。。以此类推
     int getRandomLevel();
+    double getScore(T value){
+        if(record.find(value)==record.end())return NULL;
+        return record[value];
+    }
 
 };
+template<typename T>
+void OsKiplist<T>::insert(double score, T val) {
+    mtx.lock();
+    assert(!val.empty());
+    //score & value from low->high in list
+    Node<T>* newNode = nullptr;
+    if(this->record.find(val)==this->record.end())newNode = new Node (score, val,getRandomLevel());//it's insert not update
+
+    this->record[val]=score;
+    Node<T>* ptr = header;
+    ptr = header;
+    for(int i = this->maxLevel;i>=0;i--){
+        while(ptr->forwards[i]!= nullptr){
+            if(ptr->forwards[i]->score<score){
+                ptr=ptr->forwards[i];
+            }else if (ptr->forwards[i]->score==score){
+                if(ptr->forwards[i]->value<val) {
+                    ptr = ptr->forwards[i];
+                }else if(ptr->forwards[i]->value==val){
+                    ptr->forwards[i]->score = score;//update
+                    break;//to next level
+                }
+                else{//ptr->forwards[i]->value>val,consider insert
+                    if(i<=newNode->level) {
+                        newNode->backward = ptr;
+                        newNode->forwards[i] = ptr->forwards[i];
+                        ptr->forwards[i] = newNode;
+                        newNode->forwards[i]->backward = newNode;
+                    }
+                    break;
+                    //go next level,i--
+                }
+            }else {//ptr->forwards[i]->score>score
+                if(i<=newNode->level){
+                    newNode->backward=ptr;
+                    newNode->forwards[i]=ptr->forwards[i];
+                    ptr->forwards[i]=newNode;
+                    newNode->forwards[i]->backward=newNode;
+                }
+                break;
+                //go next level,i--
+            }
+        }
+        if(ptr->forwards[i]== nullptr){
+            if(i<=newNode->level){
+                ptr->forwards[i]=newNode;
+                newNode->backward=ptr;
+                if(i==0)this->tail = newNode;
+            }
+        }
+    }
+    mtx.unlock();
+    return;
+}
+template <typename T>
+bool OsKiplist<T>::deleteMember(T member){
+    mtx.lock();
+    if(this->record.find(member)==record.end())return false;
+    double score = this->record[member];
+    remove(this->record.begin(), this->record.end(),member);
+    Node<T> * ptr = header;
+    for(int i = this->maxLevel;i>=0;i--){
+        while(ptr->forwards[i]!= nullptr){
+            if(ptr->forwards[i]->score<score){
+                ptr= ptr->forwards[i];
+            }else if (ptr->forwards[i]->score > score){
+                break;//go to next level
+            }else if(ptr->forwards[i]->score==score){
+                if(ptr->forwards[i]->value<member){
+                    ptr=ptr->forwards[i];
+                }else if(ptr->forwards[i]->value>member){
+                    break;//go to next level
+                }else{//ptr->forwards[i]->value==member
+                    ptr->forwards[i]=ptr->forwards[i]->forwards[i];
+                    if(i==0)delete ptr->forwards[i]->backward;
+                    if(ptr->forwards[i]!= nullptr)ptr->forwards[i]->backward=ptr;
+                    break;//go to next level to delete more
+                }
+            }
+        }
+    }
+    mtx.unlock();
+    return true;
+}
+
+template <typename T>
+int OsKiplist<T>::getRandomLevel() {
+    int level = 0;
+    // 使用标准的随机数生成方法
+    while ((static_cast<double>(rand()) / RAND_MAX) < SKIPLIST_P && level < this->maxLevel) {
+        level++;
+    }
+    return level;
+}
 
 
 #endif //OSKIPLIST_OSKIPLIST_H
