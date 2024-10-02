@@ -1015,5 +1015,4 @@ CMakeFiles/OsKiplist.dir/lib/HttpServer.cpp.o: \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.4.sdk/usr/include/c++/v1/__chrono/literals.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.4.sdk/usr/include/c++/v1/unordered_set \
   /Users/zhangbokun/Documents/k/OsKiplist/include/OsKiplist.h \
-  /Users/zhangbokun/Documents/k/OsKiplist/include/Node.h \
-  /Users/zhangbokun/Documents/k/OsKiplist/include/RaftNode.h
+  /Users/zhangbokun/Documents/k/OsKiplist/include/Node.h

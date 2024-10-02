@@ -44,10 +44,10 @@ cmake_force:
 SHELL = /bin/sh
 
 # The CMake executable.
-CMAKE_COMMAND = /opt/homebrew/Cellar/cmake/3.30.3/bin/cmake
+CMAKE_COMMAND = /opt/homebrew/Cellar/cmake/3.30.4/bin/cmake
 
 # The command to remove a file.
-RM = /opt/homebrew/Cellar/cmake/3.30.3/bin/cmake -E rm -f
+RM = /opt/homebrew/Cellar/cmake/3.30.4/bin/cmake -E rm -f
 
 # Escaping for special characters.
 EQUALS = =
@@ -97,24 +97,10 @@ CMakeFiles/OsKiplist.dir/lib/HttpServer.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/OsKiplist.dir/lib/HttpServer.cpp.s"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/zhangbokun/Documents/k/OsKiplist/lib/HttpServer.cpp -o CMakeFiles/OsKiplist.dir/lib/HttpServer.cpp.s
 
-CMakeFiles/OsKiplist.dir/lib/RaftNode.cpp.o: CMakeFiles/OsKiplist.dir/flags.make
-CMakeFiles/OsKiplist.dir/lib/RaftNode.cpp.o: /Users/zhangbokun/Documents/k/OsKiplist/lib/RaftNode.cpp
-CMakeFiles/OsKiplist.dir/lib/RaftNode.cpp.o: CMakeFiles/OsKiplist.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/zhangbokun/Documents/k/OsKiplist/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/OsKiplist.dir/lib/RaftNode.cpp.o"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/OsKiplist.dir/lib/RaftNode.cpp.o -MF CMakeFiles/OsKiplist.dir/lib/RaftNode.cpp.o.d -o CMakeFiles/OsKiplist.dir/lib/RaftNode.cpp.o -c /Users/zhangbokun/Documents/k/OsKiplist/lib/RaftNode.cpp
-
-CMakeFiles/OsKiplist.dir/lib/RaftNode.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/OsKiplist.dir/lib/RaftNode.cpp.i"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/zhangbokun/Documents/k/OsKiplist/lib/RaftNode.cpp > CMakeFiles/OsKiplist.dir/lib/RaftNode.cpp.i
-
-CMakeFiles/OsKiplist.dir/lib/RaftNode.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/OsKiplist.dir/lib/RaftNode.cpp.s"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/zhangbokun/Documents/k/OsKiplist/lib/RaftNode.cpp -o CMakeFiles/OsKiplist.dir/lib/RaftNode.cpp.s
-
 CMakeFiles/OsKiplist.dir/lib/OsKiplist.cpp.o: CMakeFiles/OsKiplist.dir/flags.make
 CMakeFiles/OsKiplist.dir/lib/OsKiplist.cpp.o: /Users/zhangbokun/Documents/k/OsKiplist/lib/OsKiplist.cpp
 CMakeFiles/OsKiplist.dir/lib/OsKiplist.cpp.o: CMakeFiles/OsKiplist.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/zhangbokun/Documents/k/OsKiplist/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/OsKiplist.dir/lib/OsKiplist.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/zhangbokun/Documents/k/OsKiplist/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/OsKiplist.dir/lib/OsKiplist.cpp.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/OsKiplist.dir/lib/OsKiplist.cpp.o -MF CMakeFiles/OsKiplist.dir/lib/OsKiplist.cpp.o.d -o CMakeFiles/OsKiplist.dir/lib/OsKiplist.cpp.o -c /Users/zhangbokun/Documents/k/OsKiplist/lib/OsKiplist.cpp
 
 CMakeFiles/OsKiplist.dir/lib/OsKiplist.cpp.i: cmake_force
@@ -129,7 +115,6 @@ CMakeFiles/OsKiplist.dir/lib/OsKiplist.cpp.s: cmake_force
 OsKiplist_OBJECTS = \
 "CMakeFiles/OsKiplist.dir/main.cpp.o" \
 "CMakeFiles/OsKiplist.dir/lib/HttpServer.cpp.o" \
-"CMakeFiles/OsKiplist.dir/lib/RaftNode.cpp.o" \
 "CMakeFiles/OsKiplist.dir/lib/OsKiplist.cpp.o"
 
 # External object files for target OsKiplist
@@ -137,11 +122,10 @@ OsKiplist_EXTERNAL_OBJECTS =
 
 OsKiplist: CMakeFiles/OsKiplist.dir/main.cpp.o
 OsKiplist: CMakeFiles/OsKiplist.dir/lib/HttpServer.cpp.o
-OsKiplist: CMakeFiles/OsKiplist.dir/lib/RaftNode.cpp.o
 OsKiplist: CMakeFiles/OsKiplist.dir/lib/OsKiplist.cpp.o
 OsKiplist: CMakeFiles/OsKiplist.dir/build.make
 OsKiplist: CMakeFiles/OsKiplist.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/zhangbokun/Documents/k/OsKiplist/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX executable OsKiplist"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/zhangbokun/Documents/k/OsKiplist/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX executable OsKiplist"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/OsKiplist.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

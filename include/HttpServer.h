@@ -7,15 +7,15 @@
 
 #include "httplib.h"
 #include "OsKiplist.h"
-#include "RaftNode.h"
+using namespace std;
 template <typename T>
 class HttpServer {
 private:
     OsKiplist<T>&  Oskiplist;
-    RaftNode& raftNode;
+    vector<std::string> peers;
 public:
-    HttpServer(OsKiplist<T>& list, RaftNode& raft)
-            : Oskiplist(list), raftNode(raft) {  // 初始化列表
+    HttpServer(OsKiplist<T>& list,const std::vector<std::string>& peer_addresses)
+            : Oskiplist(list),peers(peer_addresses){  // 初始化列表
     }
     void start(int port);
 
@@ -34,9 +34,18 @@ void HttpServer<T>::start(int port) {
         T value = static_cast<T> (req.get_param_value("value"));
 
         Oskiplist.insert(score,value);
-
-        raftNode.appendLog(value);  // Append to Raft log
-        res.set_content("Inserted", "text/plain");
+        res.set_content("Inserted locally", "text/plain");
+        for (const auto& peer : peers) {
+            httplib::Client client(peer.c_str());
+            client.Post("/update", req.body, "application/x-www-form-urlencoded");
+        }
+    });
+    svr.Post("/update", [&](const httplib::Request& req, httplib::Response& res) {
+        double score = std::stod(req.get_param_value("score"));
+        T value = static_cast<T>(req.get_param_value("value"));
+        // 更新本地数据
+        Oskiplist.insert(score, value);
+        res.set_content("Updated from peer", "text/plain");
     });
     svr.listen("localhost", port);
 }

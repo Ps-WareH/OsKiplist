@@ -45,10 +45,10 @@ cmake_force:
 SHELL = /bin/sh
 
 # The CMake executable.
-CMAKE_COMMAND = /opt/homebrew/Cellar/cmake/3.30.3/bin/cmake
+CMAKE_COMMAND = /opt/homebrew/Cellar/cmake/3.30.4/bin/cmake
 
 # The command to remove a file.
-RM = /opt/homebrew/Cellar/cmake/3.30.3/bin/cmake -E rm -f
+RM = /opt/homebrew/Cellar/cmake/3.30.4/bin/cmake -E rm -f
 
 # Escaping for special characters.
 EQUALS = =
@@ -81,12 +81,12 @@ clean: CMakeFiles/OsKiplist.dir/clean
 CMakeFiles/OsKiplist.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/OsKiplist.dir/build.make CMakeFiles/OsKiplist.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/OsKiplist.dir/build.make CMakeFiles/OsKiplist.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/zhangbokun/Documents/k/OsKiplist/build/CMakeFiles --progress-num=1,2,3,4,5 "Built target OsKiplist"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/zhangbokun/Documents/k/OsKiplist/build/CMakeFiles --progress-num=1,2,3,4 "Built target OsKiplist"
 .PHONY : CMakeFiles/OsKiplist.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/OsKiplist.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/zhangbokun/Documents/k/OsKiplist/build/CMakeFiles 5
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/zhangbokun/Documents/k/OsKiplist/build/CMakeFiles 4
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/OsKiplist.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/zhangbokun/Documents/k/OsKiplist/build/CMakeFiles 0
 .PHONY : CMakeFiles/OsKiplist.dir/rule

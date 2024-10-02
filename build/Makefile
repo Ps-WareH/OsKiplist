@@ -48,10 +48,10 @@ cmake_force:
 SHELL = /bin/sh
 
 # The CMake executable.
-CMAKE_COMMAND = /opt/homebrew/Cellar/cmake/3.30.3/bin/cmake
+CMAKE_COMMAND = /opt/homebrew/Cellar/cmake/3.30.4/bin/cmake
 
 # The command to remove a file.
-RM = /opt/homebrew/Cellar/cmake/3.30.3/bin/cmake -E rm -f
+RM = /opt/homebrew/Cellar/cmake/3.30.4/bin/cmake -E rm -f
 
 # Escaping for special characters.
 EQUALS = =
@@ -68,7 +68,7 @@ CMAKE_BINARY_DIR = /Users/zhangbokun/Documents/k/OsKiplist/build
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Running CMake cache editor..."
-	/opt/homebrew/Cellar/cmake/3.30.3/bin/ccmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	/opt/homebrew/Cellar/cmake/3.30.4/bin/ccmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : edit_cache
 
 # Special rule for the target edit_cache
@@ -78,7 +78,7 @@ edit_cache/fast: edit_cache
 # Special rule for the target rebuild_cache
 rebuild_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Running CMake to regenerate build system..."
-	/opt/homebrew/Cellar/cmake/3.30.3/bin/cmake --regenerate-during-build -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	/opt/homebrew/Cellar/cmake/3.30.4/bin/cmake --regenerate-during-build -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : rebuild_cache
 
 # Special rule for the target rebuild_cache
@@ -177,30 +177,6 @@ lib/OsKiplist.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/OsKiplist.dir/build.make CMakeFiles/OsKiplist.dir/lib/OsKiplist.cpp.s
 .PHONY : lib/OsKiplist.cpp.s
 
-lib/RaftNode.o: lib/RaftNode.cpp.o
-.PHONY : lib/RaftNode.o
-
-# target to build an object file
-lib/RaftNode.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/OsKiplist.dir/build.make CMakeFiles/OsKiplist.dir/lib/RaftNode.cpp.o
-.PHONY : lib/RaftNode.cpp.o
-
-lib/RaftNode.i: lib/RaftNode.cpp.i
-.PHONY : lib/RaftNode.i
-
-# target to preprocess a source file
-lib/RaftNode.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/OsKiplist.dir/build.make CMakeFiles/OsKiplist.dir/lib/RaftNode.cpp.i
-.PHONY : lib/RaftNode.cpp.i
-
-lib/RaftNode.s: lib/RaftNode.cpp.s
-.PHONY : lib/RaftNode.s
-
-# target to generate assembly for a file
-lib/RaftNode.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/OsKiplist.dir/build.make CMakeFiles/OsKiplist.dir/lib/RaftNode.cpp.s
-.PHONY : lib/RaftNode.cpp.s
-
 main.o: main.cpp.o
 .PHONY : main.o
 
@@ -240,9 +216,6 @@ help:
 	@echo "... lib/OsKiplist.o"
 	@echo "... lib/OsKiplist.i"
 	@echo "... lib/OsKiplist.s"
-	@echo "... lib/RaftNode.o"
-	@echo "... lib/RaftNode.i"
-	@echo "... lib/RaftNode.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
