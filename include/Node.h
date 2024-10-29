@@ -13,10 +13,10 @@ class Node {
 public:
     double score;
     T value;
-    int level;//如果在level 1， 那么有2个forward指针
-
+    int level;//如果在level 1， 那么有1个forward指针,max level3 : 1,2,3
     Node* backward;// node before
-    Node** forwards;// forwards[0]: node after this in level 0
+    Node** forwards;// forwards[0]: node after this in level 1
+
     const char* valueToString(T val) {
         if constexpr (std::is_arithmetic<T>::value) {
             // 如果是数值类型，使用 std::to_string 转换
@@ -43,7 +43,7 @@ public:
 //        // 分配内存 +1 是为了包含 '\0'
 //        //模仿raw编码
 //        strcpy((char*)value, strVal);
-        this->forwards = new Node<T>*[level + 1];//a vec of nullptr
+        this->forwards = new Node<T>*[level];//a vec of nullptr
     };
     ~Node(){
         free(this->value);

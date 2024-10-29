@@ -6,70 +6,95 @@
 #include <iostream>
 #include <cassert>
 #include <cstdlib>
+#include <vector>
 #include <ctime>
+#include <mutex>
 #include <unordered_map>
+#include <limits>
 #define SKIPLIST_P 0.5
 #define OSKIPLIST_OSKIPLIST_H
 
 using namespace std;
 template<typename T>
-//can this T be of different type?...
+//如果多个线程持有同一个skiplist实例，那么mtx是共享的，即同一时刻，只有一个线程，可以访问mtx
 class OsKiplist {
-    Node<T>* header;
-    Node<T>* tail;
+
     int maxLevel=3;
-    unordered_map<T,double> record;
-    //？？？
-    std::mutex mtx;//全局变量还是类的成员变量？？
+
+    std::mutex mtx;
 public:
+    Node<T>* header;
+    unordered_map<T,double> record;
     OsKiplist(int maxLevel){
         assert(maxLevel>0);
         this->maxLevel=maxLevel;
-        header= new Node(maxLevel,static_cast<T>("dummy"),maxLevel);
-        tail = nullptr;
+        header= new Node(0-numeric_limits<double>::infinity(),static_cast<T>("dummy"),maxLevel);
+
     }
     //score from low->high
     //value from low->high
     //如果一个元素已经存在，score会覆盖
+    void insertNew(Node<T>* newNode);
     void insert(double score, T val);
     bool deleteMember(T memeber);
-
-//    randomLevel() 方法返回 0 表示当前插入的该元素不需要建索引，只需要存储数据到原始链表即可（概率 1/2）
-//    randomLevel() 方法返回 1 表示当前插入的该元素需要建一级索引（概率 1/4）
-//    randomLevel() 方法返回 2 表示当前插入的该元素需要建二级索引（概率 1/8）
-//    randomLevel() 方法返回 3 表示当前插入的该元素需要建三级索引（概率 1/16）
-//    。。。以此类推
+    void dumpFile();
+    void loadFile();
+//    ZRANGEBYSCORE myzset 1.0 3.0
+    vector<T> searchBetween(double minS, double maxS);
     int getRandomLevel();
     double getScore(T value){
         if(record.find(value)==record.end())return NULL;
         return record[value];
     }
-
 };
-template<typename T>
-void OsKiplist<T>::insert(double score, T val) {
-    mtx.lock();
-    assert(!val.empty());
-    //score & value from low->high in list
-    Node<T>* newNode = nullptr;
-    if(this->record.find(val)==this->record.end())newNode = new Node (score, val,getRandomLevel());//it's insert not update
 
-    this->record[val]=score;
-    Node<T>* ptr = header;
-    ptr = header;
-    for(int i = this->maxLevel;i>=0;i--){
+template<typename T>
+vector<T> OsKiplist<T>::searchBetween(double minS, double maxS){
+    mtx.lock();
+    vector<T> res;
+    Node<T> * ptr = header;
+    for(int i = this->maxLevel-1;i>=0;i--){
         while(ptr->forwards[i]!= nullptr){
-            if(ptr->forwards[i]->score<score){
-                ptr=ptr->forwards[i];
-            }else if (ptr->forwards[i]->score==score){
-                if(ptr->forwards[i]->value<val) {
+            if(ptr->forwards[i]->score<minS){
+                ptr= ptr->forwards[i];
+            }else if (ptr->forwards[i]->score > minS){
+                break;//go to next level
+            }else if(ptr->forwards[i]->score==minS){
+                break;
+            }
+        }
+    }
+    while(ptr!= nullptr){
+        if(ptr->score>=minS && ptr->score<=maxS){
+            res.push_back(ptr->value);
+            ptr=ptr->forwards[0];
+        }else if(ptr->score<minS){
+            ptr=ptr->forwards[0];
+        }else{
+            break;
+        }
+    }
+    mtx.unlock();
+    return res;
+}
+template<typename T>
+void OsKiplist<T>::insertNew(Node<T>* newNode){
+    Node<T>* ptr = this->header;
+    double score = newNode->score;
+    T val = newNode->value;
+
+    for(int i = this->maxLevel-1;i>=0;i--) {
+        while (ptr->forwards[i] != nullptr) {
+            if (ptr->forwards[i]->score < score) {
+                ptr = ptr->forwards[i];
+            } else if (ptr->forwards[i]->score == score) {
+                if (ptr->forwards[i]->value < val) {
                     ptr = ptr->forwards[i];
-                }else if(ptr->forwards[i]->value==val){
+                } else if (ptr->forwards[i]->value == val) {
                     ptr->forwards[i]->score = score;//update
                     break;//to next level
-                }
-                else{//ptr->forwards[i]->value>val,consider insert
-                    if(i<=newNode->level) {
+                } else {//ptr->forwards[i]->value>val,consider insert
+                    if (i <= newNode->level - 1) {
                         newNode->backward = ptr;
                         newNode->forwards[i] = ptr->forwards[i];
                         ptr->forwards[i] = newNode;
@@ -78,22 +103,54 @@ void OsKiplist<T>::insert(double score, T val) {
                     break;
                     //go next level,i--
                 }
-            }else {//ptr->forwards[i]->score>score
-                if(i<=newNode->level){
-                    newNode->backward=ptr;
-                    newNode->forwards[i]=ptr->forwards[i];
-                    ptr->forwards[i]=newNode;
-                    newNode->forwards[i]->backward=newNode;
+            } else {//ptr->forwards[i]->score>score
+                if (i <= newNode->level - 1 && i>=0) {
+                    newNode->backward = ptr;
+                    newNode->forwards[i] = ptr->forwards[i];
+                    ptr->forwards[i] = newNode;
+                    newNode->forwards[i]->backward = newNode;
+//                    i-=1;
                 }
                 break;
                 //go next level,i--
             }
         }
-        if(ptr->forwards[i]== nullptr){
-            if(i<=newNode->level){
-                ptr->forwards[i]=newNode;
-                newNode->backward=ptr;
-                if(i==0)this->tail = newNode;
+        if (ptr->forwards[i] == nullptr) {
+            if (i <= newNode->level - 1 && i>=0) {
+                ptr->forwards[i] = newNode;
+                newNode->backward = ptr;
+//                i-=1;
+            }
+        }
+    }
+}
+template<typename T>
+void OsKiplist<T>::insert(double score, T val) {
+    mtx.lock();
+    assert(!val.empty());
+    //score & value from low->high in list
+    Node<T>* newNode = nullptr;
+    double originScore = 0;
+    if(this->record.find(val)==this->record.end()){
+        newNode = new Node(score, val,getRandomLevel());//it's insert not update
+//        cout<<newNode->level<<endl;//0,1,2
+    }else originScore=this->record[val];
+    this->record[val]=score;
+
+    if(newNode!= nullptr){
+        insertNew(newNode);
+    }else {
+        Node<T>* ptr = this->header;
+        for(int i = this->maxLevel-1;i>=0;i--){
+            while(ptr->forwards[i]!= nullptr){
+                if(ptr->forwards[i]->score<originScore){
+                    ptr= ptr->forwards[i];
+                }else if (ptr->forwards[i]->score > originScore){
+                    break;//go to next level
+                }else if(ptr->forwards[i]->score==originScore){
+                    ptr->forwards[i]->score = score;
+                    break;
+                }
             }
         }
     }
@@ -107,7 +164,7 @@ bool OsKiplist<T>::deleteMember(T member){
     double score = this->record[member];
     remove(this->record.begin(), this->record.end(),member);
     Node<T> * ptr = header;
-    for(int i = this->maxLevel;i>=0;i--){
+    for(int i = this->maxLevel-1;i>=0;i--){
         while(ptr->forwards[i]!= nullptr){
             if(ptr->forwards[i]->score<score){
                 ptr= ptr->forwards[i];
@@ -133,12 +190,15 @@ bool OsKiplist<T>::deleteMember(T member){
 
 template <typename T>
 int OsKiplist<T>::getRandomLevel() {
-    int level = 0;
+    int level = 1;
     // 使用标准的随机数生成方法
-    while ((static_cast<double>(rand()) / RAND_MAX) < SKIPLIST_P && level < this->maxLevel) {
+    while ((static_cast<double>(rand()) / RAND_MAX) < SKIPLIST_P && level <=this->maxLevel) {
         level++;
     }
     return level;
+}
+void dumpFile(){
+
 }
 
 

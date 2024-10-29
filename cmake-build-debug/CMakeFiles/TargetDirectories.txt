@@ -1,0 +1,4 @@
+/Users/zhangbokun/Documents/TrashProject/OsKiplist/cmake-build-debug/CMakeFiles/OsKiplist.dir
+/Users/zhangbokun/Documents/TrashProject/OsKiplist/cmake-build-debug/CMakeFiles/stress.dir
+/Users/zhangbokun/Documents/TrashProject/OsKiplist/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/zhangbokun/Documents/TrashProject/OsKiplist/cmake-build-debug/CMakeFiles/rebuild_cache.dir
